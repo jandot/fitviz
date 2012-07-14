@@ -1,8 +1,9 @@
 (ns fitviz.core)
 
 (require ['oauth.client :as 'oauth])
-;(require ['clojure.contrib.json :as 'json])
-;(require [clj-http :as http])
+;(require ['org.clojure/data.json :as 'json])
+(use '[clojure.data.json :only (read-json json-str)])
+(require '[clj-http.client :as client])
 
 (def today (java.util.Date.))
 
@@ -43,15 +44,18 @@
 
   (println access-token-response)
 
-;  (def todays-steps (json/read-json
-;                    (:content (http/get (get-url "steps" (today-as-str))
-;                    :headers {"Authorization" (oauth/authorization-header
-;                      (oauth/credentials consumer
-;                        token
-;                        access-token-response 
-;                        :GET
-;                        (get-url "steps" (today-as-str))))}
-;                     :parameters (http/map->params {:use-expect-continue false })
-;                      :as :string))))
+  (def data (client/get (get-url "steps" (today-as-str)) {:oauth-token (access-token-response :oauth_token)}))
 
-;  (println todays-steps)
+  (println data)
+
+  ;(def todays-steps (read-json
+  ;                  (:content (client/get (get-url "steps" (today-as-str))
+  ;                   :headers {"Authorization" (oauth/authorization-header
+  ;                      (oauth/credentials consumer
+  ;                        token
+  ;                        secret
+  ;                        :GET
+  ;                        (get-url "steps" (today-as-str))))}
+  ;                    :as :string))))
+
+  ;(println todays-steps)
